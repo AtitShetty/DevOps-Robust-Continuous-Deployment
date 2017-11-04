@@ -1,0 +1,31 @@
+---
+- name: Checking if the path to iTrust war exists
+  stat:
+    path: "{{ iTrust_war_path }}"
+  register: check_iTrust_Path
+
+- fail:
+    msg: "The war file is not found at {{ iTrust_war_path }}"
+  when: check_iTrust_Path.stat.exists == False
+
+- name: Install tomcat
+  include_role:
+    name: tomcat_setup
+    private: yes
+
+- name: Install mysql-server
+  include_role:
+    name: mysql_setup
+    private: yes
+
+- name: Copy the iTrust war file to Tomcat's deployment folder
+  copy:
+    src: "{{ iTrust_war_path }}"
+    dest: "/opt/tomcat9/webapps/iTrust.war"
+
+- name: Shutdown Tomcat
+  shell: nohup sh /opt/tomcat9/bin/shutdown.sh
+
+- name: Start Tomcat
+  shell: nohup sh /opt/tomcat9/bin/startup.sh
+...

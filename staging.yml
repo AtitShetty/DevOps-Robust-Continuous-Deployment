@@ -1,0 +1,12 @@
+---
+all:
+  hosts:
+    jenkins:
+      ansible_ssh_host: 192.168.33.10
+      ansible_ssh_user: ubuntu
+
+    remote:
+      ansible_ssh_host: 192.168.33.20
+      ansible_ssh_user: ubuntu
+
+...

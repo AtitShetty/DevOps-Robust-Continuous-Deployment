@@ -1,0 +1,12 @@
+---
+plugins:
+  - junit
+  - postbuild-task
+  - jacoco
+  - test-stability
+  - git
+  - git-client
+  - git-server
+  - maven-plugin
+  - build-timeout
+...

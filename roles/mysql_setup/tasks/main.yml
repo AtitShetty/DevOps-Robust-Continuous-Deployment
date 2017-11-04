@@ -1,0 +1,29 @@
+---
+- name: Install mysql server
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - mysql-server
+
+- name: Copy mysql config file
+  copy:
+    src: my.cnf
+    dest: "{{ item }}"
+    force: yes
+  with_items:
+    - /etc/mysql/my.cnf
+    - /etc/my.cnf
+    - /etc/alternatives/my.cnf
+    - /var/lib/dpkg/alternatives/my.cnf
+
+- name: Flush mysql privileges for root user
+  command: mysql -u root --execute "UPDATE mysql.user SET plugin = 'mysql_native_password' WHERE user = 'root'; FLUSH PRIVILEGES;"
+
+- name: Restart mysql service
+  service:
+    name: mysql
+    state: restarted
+    enabled: true
+...

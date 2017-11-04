@@ -1,0 +1,53 @@
+---
+- hosts: jenkins
+
+  gather_facts: false
+
+  vars_prompt:
+    # - name: username
+    #   prompt: "Enter remote username"
+    #   private: no
+    # - name: jenkinspassword
+    #   prompt: "Enter Jenkins Admin Password"
+    #   private: yes
+    - name: github_username
+      prompt: "Enter github username"
+      private: no
+    - name: github_password
+      prompt: "Enter github Password"
+      private: yes
+
+  roles:
+    # - role: java8_setup
+    #   become: true
+    # - role: tomcat_setup
+    #   become: true
+    # - role: mysql_setup
+    #   become: true
+    # - role: jenkins_setup
+    #   become: true
+    - role: itrust_jenkins_job_setup
+      become: true
+
+  tasks:
+    - name: Ensure that directory exists for cloning
+      file:
+        path: /etc/playbooksRepo
+        state: directory
+      become: true
+
+    - name: Clone playbook to run jenkins post build scripts
+      command: git clone https://{{github_username}}:{{github_password}}@github.ncsu.edu/akshetty/devops-milestone3.git
+      args:
+        chdir: /etc/playbooksRepo
+      become: true
+
+    - name: Transfer remote server certificates
+      copy:
+        src: deployment_env
+        dest: "{{ post_build_playbook_path }}"
+        mode: 0600
+
+
+
+...

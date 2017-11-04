@@ -1,0 +1,65 @@
+---
+- name: Adding the Jenkins Public GPG key
+  apt_key:
+    url: https://pkg.jenkins.io/debian/jenkins-ci.org.key
+    state: present
+
+- name: Adding Jenkins to trusted sources.list
+  apt_repository:
+    repo: deb http://pkg.jenkins.io/debian-stable binary/
+    state: present
+    update_cache: yes
+
+- name: Installing Jenkins
+  apt: pkg=jenkins state=present update_cache=yes
+
+- name: Starting Jenkins service
+  service:
+    name: jenkins
+    state: started
+
+- name: Get the jenkins-cli jarfile from the Jenkins server.
+  get_url:
+    url: "http://localhost:8080/jnlpJars/jenkins-cli.jar"
+    dest: /home/
+  register: jarfile_get
+  until: "'OK' in jarfile_get.msg or 'file already exists' in jarfile_get.msg"
+  retries: 5
+  delay: 10
+  check_mode: no
+
+- name: Get the jenkins-cli jarfile from the Jenkins server.
+  get_url:
+    url: "http://localhost:8080/jnlpJars/jenkins-cli.jar"
+    dest: /home/
+  register: jarfile_get
+  until: "'OK' in jarfile_get.msg or 'file already exists' in jarfile_get.msg"
+  retries: 5
+  delay: 10
+  check_mode: no
+
+- name: Getting Initial admin password
+  shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+  register: jenkinsadminpass
+
+- name: Turn off Jenkins setup wizard
+  lineinfile:
+      dest: /etc/default/jenkins
+      regexp: '^JAVA_ARGS='
+      line: 'JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
+      insertbefore: '^DAEMON_ARGS='
+
+- name: Adding mentioned user to jenkins
+  shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("{{username}}", "{{jenkinspassword}}")' | java -jar /home/jenkins-cli.jar -auth admin:"{{jenkinsadminpass.stdout}}" -s http://localhost:8080/ groovy =
+
+- name: Installing Recommended Plugins
+  shell: java -jar /home/jenkins-cli.jar -auth "{{username}}":"{{jenkinspassword}}" -s http://localhost:8080 install-plugin "{{item}}" -deploy
+  with_items:
+    - "{{ plugins }}"
+
+- name: Enabling jenkins to run on boot
+  service:
+    name: jenkins
+    state: restarted
+    enabled: true
+...

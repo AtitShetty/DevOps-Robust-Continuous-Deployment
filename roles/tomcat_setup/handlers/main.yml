@@ -1,0 +1,6 @@
+---
+- name: Remove installation tar
+  file:
+    state: absent
+    path: /opt/apache-tomcat-9.0.0.M27.tar.gz
+...

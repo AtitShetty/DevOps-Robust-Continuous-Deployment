@@ -1,0 +1,40 @@
+---
+
+- name: Install java 8
+  include_role:
+    name: java8_setup
+    private: yes
+
+- name: Install mysql-server
+  include_role:
+    name: mysql_setup
+    private: yes
+
+- name: Installing other required packages
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - maven
+    - gcc
+    - git
+    - git-core
+    - python-software-properties
+
+- name: Checking if itrust build job already exists
+  shell: "java -jar /home/jenkins-cli.jar -s http://localhost:8080 list-jobs --username {{username}} --password {{jenkinspassword}}"
+  register: jobs_list
+  changed_when: "jobs_list.stdout.find('itrust-packaging-job') == -1"
+
+- name: Sending template for iTrust to Jenkins server
+  template:
+    src: itrust.xml.j2
+    dest: /tmp/itrust.xml
+    owner: jenkins
+    group: jenkins
+  when: "jobs_list.stdout.find('itrust-packaging-job') == -1"
+
+- name: Creating new build job for itrust
+  shell: java -jar /home/jenkins-cli.jar -auth "{{username}}":"{{jenkinspassword}}" -s http://localhost:8080 create-job itrust-packaging-job < /tmp/itrust.xml
+  when: "jobs_list.stdout.find('itrust-packaging-job') == -1"
+...
