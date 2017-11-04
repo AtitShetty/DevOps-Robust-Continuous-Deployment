@@ -44,7 +44,7 @@
 
     - name: Transfer remote server certificates
       copy:
-        src: deployment_env
+        src: deployment_env.pem
         dest: "{{ post_build_playbook_path }}"
         mode: 0600
 
