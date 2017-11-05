@@ -18,14 +18,8 @@
       private: yes
 
   roles:
-    # - role: java8_setup
-    #   become: true
-    # - role: tomcat_setup
-    #   become: true
-    # - role: mysql_setup
-    #   become: true
-    # - role: jenkins_setup
-    #   become: true
+    - role: jenkins_setup
+      become: true
     - role: itrust_jenkins_job_setup
       become: true
 ...

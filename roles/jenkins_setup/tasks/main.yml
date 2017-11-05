@@ -28,16 +28,6 @@
   delay: 10
   check_mode: no
 
-- name: Get the jenkins-cli jarfile from the Jenkins server.
-  get_url:
-    url: "http://localhost:8080/jnlpJars/jenkins-cli.jar"
-    dest: /home/
-  register: jarfile_get
-  until: "'OK' in jarfile_get.msg or 'file already exists' in jarfile_get.msg"
-  retries: 5
-  delay: 10
-  check_mode: no
-
 - name: Getting Initial admin password
   shell: cat /var/lib/jenkins/secrets/initialAdminPassword
   register: jenkinsadminpass
@@ -49,8 +39,14 @@
       line: 'JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
       insertbefore: '^DAEMON_ARGS='
 
-# - name: Adding mentioned user to jenkins
-#   shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("{{username}}", "{{jenkinspassword}}")' | java -jar /home/jenkins-cli.jar -auth admin:"{{jenkinsadminpass.stdout}}" -s http://localhost:8080/ groovy =
+- name: stat /var/lib/jenkins/users/{{username}} in jenkins users directory
+  stat:
+    path: /var/lib/jenkins/users/{{username}}
+  register: userExistence
+
+- name: Adding mentioned user to jenkins
+  shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("{{username}}", "{{jenkinspassword}}")' | java -jar /home/jenkins-cli.jar -auth admin:"{{jenkinsadminpass.stdout}}" -s http://localhost:8080/ groovy =
+  when: userExistence.stat.exists == False
 
 - name: Installing Recommended Plugins
   shell: java -jar /home/jenkins-cli.jar -auth "{{username}}":"{{jenkinspassword}}" -s http://localhost:8080 install-plugin "{{item}}" -deploy
