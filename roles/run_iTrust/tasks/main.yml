@@ -32,6 +32,9 @@
     src: /tmp/iTrust_Dump.sql
     dest: /tmp/iTrust_Dump.sql
 
+- name: Ensure that itrust database exists
+  command: mysql -u root --execute "CREATE DATABASE IF NOT EXISTS itrust;"
+
 - name: Import tables from sql dump
   shell: mysql itrust < /tmp/iTrust_Dump.sql
 
