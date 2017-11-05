@@ -24,8 +24,8 @@
     #   become: true
     # - role: mysql_setup
     #   become: true
-    - role: jenkins_setup
-      become: true
+    # - role: jenkins_setup
+    #   become: true
     - role: itrust_jenkins_job_setup
       become: true
 ...
