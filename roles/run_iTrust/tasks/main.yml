@@ -9,6 +9,10 @@
     msg: "The war file is not found at {{ iTrust_war_path }} and {{ check_iTrust_Path.stat.exists }}"
   when: check_iTrust_Path.stat.exists == False
 
+- name: Take mysql database dump for iTrust_war_path
+  local_action:
+    module: command mysqldump iTrust > iTrust_Dump.sql
+
 - name: Install tomcat
   include_role:
     name: tomcat_setup
@@ -23,6 +27,14 @@
   copy:
     src: "{{ iTrust_war_path }}"
     dest: "/opt/tomcat9/webapps/iTrust.war"
+
+- name: Copy iTrust database dump
+  copy:
+    src: iTrust_Dump.sql
+    dest: iTrust_Dump.sql
+
+- name: Import tables from sql dump
+  command: mysql itrust < iTrust_Dump.sql
 
 - name: Shutdown Tomcat
   shell: nohup sh /opt/tomcat9/bin/shutdown.sh
