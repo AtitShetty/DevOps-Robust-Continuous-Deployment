@@ -49,8 +49,8 @@
       line: 'JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
       insertbefore: '^DAEMON_ARGS='
 
-- name: Adding mentioned user to jenkins
-  shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("{{username}}", "{{jenkinspassword}}")' | java -jar /home/jenkins-cli.jar -auth admin:"{{jenkinsadminpass.stdout}}" -s http://localhost:8080/ groovy =
+# - name: Adding mentioned user to jenkins
+#   shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("{{username}}", "{{jenkinspassword}}")' | java -jar /home/jenkins-cli.jar -auth admin:"{{jenkinsadminpass.stdout}}" -s http://localhost:8080/ groovy =
 
 - name: Installing Recommended Plugins
   shell: java -jar /home/jenkins-cli.jar -auth "{{username}}":"{{jenkinspassword}}" -s http://localhost:8080 install-plugin "{{item}}" -deploy
@@ -65,7 +65,7 @@
 
 - name: Enable jenkins to run shell script as root without password
   lineinfile:
-    line: jenkins ALL=(ALL) NOPASSWD: ALL
+    line: 'jenkins ALL=(ALL) NOPASSWD: ALL'
     path: /etc/sudoers
     insertafter: EOF
     state: present
