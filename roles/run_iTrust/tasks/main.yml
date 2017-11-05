@@ -30,10 +30,10 @@
 - name: Copy iTrust database dump
   copy:
     src: /tmp/iTrust_Dump.sql
-    dest: iTrust_Dump.sql
+    dest: /tmp/iTrust_Dump.sql
 
 - name: Import tables from sql dump
-  command: mysql itrust < iTrust_Dump.sql
+  command: mysql itrust < /tmp/iTrust_Dump.sql
 
 - name: Shutdown Tomcat
   shell: nohup sh /opt/tomcat9/bin/shutdown.sh
