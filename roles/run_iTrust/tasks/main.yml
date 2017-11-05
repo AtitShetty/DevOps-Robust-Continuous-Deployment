@@ -3,7 +3,7 @@
   local_action:
     module: stat
     path: "{{ iTrust_war_path }}"
-    register: check_iTrust_Path
+  register: check_iTrust_Path
 
 - fail:
     msg: "The war file is not found at {{ iTrust_war_path }} and {{ check_iTrust_Path.stat.exists }}"
