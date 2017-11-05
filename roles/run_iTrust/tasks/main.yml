@@ -5,7 +5,7 @@
   register: check_iTrust_Path
 
 - fail:
-    msg: "The war file is not found at {{ iTrust_war_path }}"
+    msg: "The war file is not found at {{ iTrust_war_path }} and {{ check_iTrust_Path.stat.exists }}"
   when: check_iTrust_Path.stat.exists == False
 
 - name: Install tomcat
