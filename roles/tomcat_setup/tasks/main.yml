@@ -27,7 +27,6 @@
   args:
     chdir: /opt
   when: tomcatPath.stat.exists == False
-  notify: Remove installation tar
 
 - name: Set CATALINA_HOME environment variables
   lineinfile:
