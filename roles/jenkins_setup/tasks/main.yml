@@ -62,4 +62,11 @@
     name: jenkins
     state: restarted
     enabled: true
+
+- name: Enable jenkins to run shell script as root without password
+  lineinfile:
+    line: jenkins ALL=(ALL) NOPASSWD: ALL
+    path: /etc/sudoers
+    insertafter: EOF
+    state: present
 ...

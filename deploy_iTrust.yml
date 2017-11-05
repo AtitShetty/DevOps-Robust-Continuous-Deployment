@@ -7,9 +7,11 @@
   - name: run ssh-keyscan to add keys to known_hosts
     local_action: shell ssh-keyscan {{ ansible_ssh_host }} >> ~/.ssh/known_hosts
     become: true
+    become_method: sudo
 
   - name: run run_iTrust role
     include_role:
       name: run_iTrust
       private: true
+    become: true
 ...
