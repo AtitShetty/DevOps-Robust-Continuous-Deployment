@@ -16,11 +16,9 @@ It will then trigger an Ansible script in post-build action that will deploy thi
   <builders>
     <hudson.tasks.Shell>
       <command>rm -rf iTrust-v23
-git clone https://{{github_username}}:{{github_password}}@github.ncsu.edu/akshetty/iTrust-v23.git
+git clone https://{{github_username}}:{{github_password}}@github.ncsu.edu/akshetty/iTrust-v23.git -b master
 cd iTrust-v23/iTrust/
-git checkout fuzzer
-git reset --hard HEAD^
-mvn package
+mvn clean package
 </command>
     </hudson.tasks.Shell>
   </builders>
@@ -36,8 +34,7 @@ mvn package
           </logTexts>
           <EscalateStatus>true</EscalateStatus>
           <RunIfJobSuccessful>true</RunIfJobSuccessful>
-          <script>cd {{post_build_playbook_path}}
-            ansible-playbook deploy_iTrust.yml -i staging.yml
+          <script>cd {{post_build_playbook_path}} && ansible-playbook deploy_iTrust.yml -i staging.yml
 </script>
         </hudson.plugins.postbuildtask.TaskProperties>
       </tasks>

@@ -10,6 +10,12 @@
     name: mysql_setup
     private: yes
 
+- name: Add ansible repository
+  apt_repository:
+    repo: 'ppa:ansible/ansible'
+    state: present
+    update_cache: yes
+
 - name: Installing other required packages
   apt:
     pkg: "{{ item }}"
@@ -20,6 +26,7 @@
     - git
     - git-core
     - python-software-properties
+    - ansible
 
 - name: Checking if itrust build job already exists
   shell: "java -jar /home/jenkins-cli.jar -s http://localhost:8080 list-jobs --username {{username}} --password {{jenkinspassword}}"
