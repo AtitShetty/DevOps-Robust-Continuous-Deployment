@@ -11,7 +11,7 @@
 
 - name: Take mysql database dump for iTrust_war_path
   local_action:
-    module: command mysqldump iTrust > iTrust_Dump.sql
+    module: command mysqldump itrust > iTrust_Dump.sql
 
 - name: Install tomcat
   include_role:
