@@ -10,7 +10,7 @@
   when: check_iTrust_Path.stat.exists == False
 
 - name: Take mysql database dump for iTrust_war_path
-  local_action: "shell mysqldump itrust > /tmp/iTrust_DUMP.sql chdir="
+  local_action: "shell mysqldump itrust > /tmp/iTrust_Dump.sql"
 
 - name: Install tomcat
   include_role:
