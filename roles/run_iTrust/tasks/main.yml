@@ -1,6 +1,8 @@
 ---
 - name: Checking if the path to iTrust war exists
-  local_action: stat "{{ iTrust_war_path }}"
+  local_action:
+    stat:
+      path: "{{ iTrust_war_path }}"
   register: check_iTrust_Path
 
 - fail:
