@@ -33,7 +33,7 @@
     dest: /tmp/iTrust_Dump.sql
 
 - name: Import tables from sql dump
-  command: mysql itrust < /tmp/iTrust_Dump.sql
+  shell: mysql itrust < /tmp/iTrust_Dump.sql
 
 - name: Shutdown Tomcat
   shell: nohup sh /opt/tomcat9/bin/shutdown.sh
