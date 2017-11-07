@@ -4,20 +4,20 @@
   gather_facts: false
   become: true
   vars_prompt:
-    # - name: username
-    #   prompt: "Enter remote username for Jenkins"
-    #   private: no
-    # - name: jenkinspassword
-    #   prompt: "Enter remote password for Jenkins"
-    #   private: yes
-    # - name: gitent_username
-    #   prompt: "Enter ncsu github username"
-    #   private: no
-    # - name: gitent_password
-    #   prompt: "Enter ncsu github Password"
-    #   private: yes
+    - name: username
+      prompt: "Enter remote username for Jenkins"
+      private: no
+    - name: jenkinspassword
+      prompt: "Enter remote password for Jenkins"
+      private: yes
+    - name: gitent_username
+      prompt: "Enter ncsu github username for iTrust"
+      private: no
+    - name: gitent_password
+      prompt: "Enter ncsu github Password"
+      private: yes
     - name: github_username
-      prompt: "Enter github username"
+      prompt: "Enter github username for checkbox.io"
       private: no
     - name: github_password
       prompt: "Enter github Password"
@@ -25,7 +25,7 @@
 
 
   roles:
-    # - role: jenkins_setup
-    # - role: itrust_jenkins_job_setup
+    - role: jenkins_setup
+    - role: itrust_jenkins_job_setup
     - role: checkboxio_jenkins_job_setup
 ...

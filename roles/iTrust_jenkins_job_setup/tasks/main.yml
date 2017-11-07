@@ -47,5 +47,5 @@
 
 - name: Get playbook for post build ansible scripts
   include_role:
-    name: clone_playbook_role
+    name: clone_playbook
 ...
