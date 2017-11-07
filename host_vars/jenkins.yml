@@ -1,5 +1,4 @@
 ---
 ansible_ssh_private_key_file : jenkins_host.pem
-ansible_python_interpreter: /usr/bin/python3
 post_build_playbook_path: /etc/playbooksRepo/devops-milestone3
 ...

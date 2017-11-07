@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>This job will pull checkbox.io master and push it to production branch.&#xd;
+  The pre-push hook will then trigger deployment to a remote server via Ansible</description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <authToken>checkboxio-packaging-job-trigger</authToken>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>rm -rf checkbox.io
+git clone https://{{github_username}}:{{github_password}}@github.com/AtitShetty/checkbox.io.git -b master
+echo "#!/bin/bash" >> checkbox.io/.git/hooks/pre-push
+echo "#!/bin/bash" >> checkbox.io/.git/hooks/pre-push
+echo "Auto deployment triggered" >> checkbox.io/.git/hooks/pre-push
+echo "cd /etc/playbooksRepo/devops-milestone3" >> checkbox.io/.git/hooks/pre-push
+echo "ansible-playbook deploy_checkboxio.yml -i staging.yml" >> checkbox.io/.git/hooks/pre-push
+chmod +x checkbox.io/.git/hooks/pre-push
+cd checkbox.io
+git push -f origin master:production
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

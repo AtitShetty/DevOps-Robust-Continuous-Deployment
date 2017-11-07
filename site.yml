@@ -2,13 +2,19 @@
 - hosts: jenkins
 
   gather_facts: false
-
+  become: true
   vars_prompt:
     # - name: username
-    #   prompt: "Enter remote username"
+    #   prompt: "Enter remote username for Jenkins"
     #   private: no
     # - name: jenkinspassword
-    #   prompt: "Enter Jenkins Admin Password"
+    #   prompt: "Enter remote password for Jenkins"
+    #   private: yes
+    # - name: gitent_username
+    #   prompt: "Enter ncsu github username"
+    #   private: no
+    # - name: gitent_password
+    #   prompt: "Enter ncsu github Password"
     #   private: yes
     - name: github_username
       prompt: "Enter github username"
@@ -17,9 +23,9 @@
       prompt: "Enter github Password"
       private: yes
 
+
   roles:
-    - role: jenkins_setup
-      become: true
-    - role: itrust_jenkins_job_setup
-      become: true
+    # - role: jenkins_setup
+    # - role: itrust_jenkins_job_setup
+    - role: checkboxio_jenkins_job_setup
 ...

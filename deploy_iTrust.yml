@@ -1,9 +1,7 @@
 ---
 - hosts: remote
-
   gather_facts: false
-
+  become: true
   roles:
     - role: run_iTrust
-      become: true
 ...
