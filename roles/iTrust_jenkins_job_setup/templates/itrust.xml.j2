@@ -17,8 +17,15 @@ It will then trigger an Ansible script in post-build action that will deploy thi
     <hudson.tasks.Shell>
       <command>rm -rf iTrust-v23
 git clone https://{{github_username}}:{{github_password}}@github.ncsu.edu/akshetty/iTrust-v23.git -b master
+echo "#!/bin/bash" >> iTrust-v23/.git/hooks/pre-push
+echo "#!/bin/bash" >> iTrust-v23/.git/hooks/pre-push
+echo "Auto deployment triggered" >> iTrust-v23/.git/hooks/pre-push
+echo "cd /etc/playbooksRepo/devops-milestone3" >> iTrust-v23/.git/hooks/pre-push
+echo "ansible-playbook deploy_iTrust.yml -i staging.yml" >> iTrust-v23/.git/hooks/pre-push
+chmod +x iTrust-v23/.git/hooks/pre-push
 cd iTrust-v23/iTrust/
 mvn clean package
+git push -f origin master:production
 </command>
     </hudson.tasks.Shell>
   </builders>
@@ -34,7 +41,8 @@ mvn clean package
           </logTexts>
           <EscalateStatus>true</EscalateStatus>
           <RunIfJobSuccessful>true</RunIfJobSuccessful>
-          <script>cd {{post_build_playbook_path}} && ansible-playbook deploy_iTrust.yml -i staging.yml
+          <script>cd {{post_build_playbook_path}}&#xd;
+            ansible-playbook deploy_iTrust.yml -i staging.yml
 </script>
         </hudson.plugins.postbuildtask.TaskProperties>
       </tasks>

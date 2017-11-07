@@ -39,11 +39,14 @@
     dest: /tmp/itrust.xml
     owner: jenkins
     group: jenkins
-  when: "jobs_list.stdout.find('itrust-packaging-job') == -1"
 
 - name: Creating new build job for itrust
   shell: java -jar /home/jenkins-cli.jar -auth "{{username}}":"{{jenkinspassword}}" -s http://localhost:8080 create-job itrust-packaging-job < /tmp/itrust.xml
   when: "jobs_list.stdout.find('itrust-packaging-job') == -1"
+
+- name: Update build job for itrust
+  shell: java -jar /home/jenkins-cli.jar -auth "{{username}}":"{{jenkinspassword}}" -s http://localhost:8080 update-job itrust-packaging-job < /tmp/itrust.xml
+  when: "jobs_list.stdout.find('itrust-packaging-job') != -1"
 
 - name: stat /etc/playbooksRepo
   stat:
