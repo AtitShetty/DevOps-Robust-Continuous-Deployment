@@ -12,7 +12,8 @@ b) deployment_env.pem (for remote host like aws)
 
 a) site.yml will setup jenkins server and add iTrust jobs
 
-b) deploy_iTrust.yml is integrated with iTrust job post-build action. This will set up remote host to run iTrust application.
+b) deploy_iTrust.yml is the ansible script that will be called from iTrust jenkins job via pre-push hook. This will set up remote host to run iTrust application.
 
+c) deploy_checkboxio.yml is the ansible script that will be called from checkboxio jenkins job via pre-push hook. This will set up remote host to run checkboxio application.
 
 
