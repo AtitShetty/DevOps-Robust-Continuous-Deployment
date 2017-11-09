@@ -1,0 +1,14 @@
+---
+packages:
+  - curl
+  - git
+  - libselinux-python
+  - unzip
+  - python-pip
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+
+nomad_bind_address: 0.0.0.0
+nomad_docker_enable: yes
