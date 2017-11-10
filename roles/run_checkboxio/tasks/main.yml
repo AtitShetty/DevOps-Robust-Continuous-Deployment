@@ -35,7 +35,8 @@
 - name: Create symbolic link node for nodejs
   file:
     src: /usr/bin/nodejs
-    path: /usr/bin/node
+    path: /usr/bin/node\
+    state: link
 
 - name: Create a mongodb service
   copy:
