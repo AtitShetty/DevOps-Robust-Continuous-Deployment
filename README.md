@@ -16,4 +16,6 @@ b) deploy_iTrust.yml is the ansible script that will be called from iTrust jenki
 
 c) deploy_checkboxio.yml is the ansible script that will be called from checkboxio jenkins job via pre-push hook. This will set up remote host to run checkboxio application.
 
+d) staging.yml is the inventory file
+
 
