@@ -11,7 +11,7 @@
      instance_tags: '{"Name":"{{ec2_tag_Name}}","Type":"{{ec2_tag_Type}}","Environment":"{{ec2_tag_Environment}}"}'
      assign_public_ip: yes
      wait: true
-     count: 2
+     count: 5
    register: ec2
 
  - debug: var=item
