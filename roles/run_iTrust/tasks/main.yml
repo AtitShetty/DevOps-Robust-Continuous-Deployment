@@ -13,7 +13,7 @@
   include_role:
     name: tomcat_setup
     private: yes
-    
+
 - name: Copy the iTrust war file to Tomcat's deployment folder
   copy:
     src: "{{ iTrust_war_path }}"
@@ -21,6 +21,9 @@
 
 - name: Shutdown Tomcat
   shell: nohup sh /opt/tomcat9/bin/shutdown.sh
+
+- pause:
+    minutes: 1
 
 - name: Start Tomcat
   shell: nohup sh /opt/tomcat9/bin/startup.sh

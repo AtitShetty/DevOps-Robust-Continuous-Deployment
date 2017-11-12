@@ -1,6 +1,6 @@
 ---
 - hosts: mysql
-  gather_facts: False
+  gather_facts: false
   become: true
   pre_tasks:
     - name: install python 2
@@ -11,6 +11,7 @@
     - { role: run_iTrust_mysql_server, mysql_server_ip: 192.168.35.10 }
 
 - hosts: remote
+  serial: 1
   gather_facts: false
   become: true
   pre_tasks:
