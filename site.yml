@@ -1,4 +1,20 @@
 ---
+- hosts: localhost
+  gather_facts: false
+  become: False
+  pre_tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
+      changed_when: False
+    - setup:
+  vars_prompt:
+    - name: AWS_ACCESS_KEY_ID
+      prompt: "Enter AWS access key id"
+      private: yes
+    - name: AWS_SECRET_ACCESS_KEY
+      prompt: "Enter AWS secret access key"
+      private: yes
+
 - hosts: jenkins
   gather_facts: false
   become: true
@@ -26,7 +42,7 @@
     - name: github_password
       prompt: "Enter github Password"
       private: yes
-      
+
   roles:
     - role: jenkins_setup
     - { role: itrust_jenkins_job_setup, mysql_server_ip: 192.168.35.10}
