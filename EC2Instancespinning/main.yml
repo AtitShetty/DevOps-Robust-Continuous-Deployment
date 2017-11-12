@@ -11,7 +11,7 @@
      instance_tags: '{"Name":"{{ec2_tag_Name}}","Type":"{{ec2_tag_Type}}","Environment":"{{ec2_tag_Environment}}"}'
      assign_public_ip: yes
      wait: true
-     count: 5
+     count: 2
    register: ec2
 
  - debug: var=item
@@ -19,11 +19,17 @@
 
  - add_host: name={{ item.public_ip }} >
              groups=tag_Type_{{ec2_tag_Type}},tag_Environment_{{ec2_tag_Environment}}
-             ec2_region={{ec2_region}} 
+             ec2_region={{ec2_region}}
              ec2_tag_Name={{ec2_tag_Name}}
              ec2_tag_Type={{ec2_tag_Type}}
              ec2_tag_Environment={{ec2_tag_Environment}}
              ec2_ip_address={{item.public_ip}}
+   with_items: "{{ec2.instances}}"
+
+ - name: file write
+   lineinfile: dest=/home/ubuntu/ip_address.txt
+               line={{ item.public_ip }}
+               state=present
    with_items: "{{ec2.instances}}"
 
  - name: Wait for the instances to boot by checking the ssh port
