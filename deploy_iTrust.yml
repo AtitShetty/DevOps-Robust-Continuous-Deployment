@@ -1,13 +1,23 @@
 ---
-- hosts: remote
-  gather_facts: false
-  become: true
-  roles:
-    - role: run_iTrust
-
 - hosts: mysql
   gather_facts: False
   become: true
+  pre_tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
+      changed_when: False
+    - setup:
   roles:
-    - role: run_iTrust_mysql_server
+    - { role: run_iTrust_mysql_server, mysql_server_ip: 192.168.35.10 }
+
+- hosts: remote
+  gather_facts: false
+  become: true
+  pre_tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
+      changed_when: False
+    - setup:
+  roles:
+    - role: run_iTrust
 ...

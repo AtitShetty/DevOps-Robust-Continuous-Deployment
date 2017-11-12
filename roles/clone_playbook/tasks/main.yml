@@ -29,7 +29,10 @@
 
 - name: Transfer remote server certificates
   copy:
-    src: deployment_env.pem
+    src: "{{ item }}"
     dest: "{{ post_build_playbook_path }}"
     mode: 0600
+  with_items:
+    - deployment_env.pem
+    - mysql.pem
 ...

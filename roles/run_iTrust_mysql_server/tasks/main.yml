@@ -4,10 +4,17 @@
     name: mysql_setup
     private: yes
 
+- name: Install ufw module
+  apt:
+    name: ufw
+    state: latest
+    update_cache: yes
+
 - name: Open mysql Import
   ufw:
-    state: allow
+    rule: allow
     port: '3306'
+    state: reloaded
 
 - name: Take mysql database dump for iTrust_war_path
   local_action: "shell mysqldump itrust > /tmp/iTrust_Dump.sql"

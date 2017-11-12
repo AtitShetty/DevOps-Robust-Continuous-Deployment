@@ -23,9 +23,13 @@ echo "Auto deployment triggered" >> iTrust-v23/.git/hooks/pre-push
 echo "cd /etc/playbooksRepo/devops-milestone3" >> iTrust-v23/.git/hooks/pre-push
 echo "ansible-playbook deploy_iTrust.yml -i iTrust_inventory" >> iTrust-v23/.git/hooks/pre-push
 chmod +x iTrust-v23/.git/hooks/pre-push
-cp /etc/iTrust_mysql_config/context.xml iTrust-v23/iTrust/WebRoot/META-INF/context.xml
 cd iTrust-v23/iTrust/
 mvn clean package
+mkdir -p target/META-INF
+cp /etc/iTrust_mysql_config/context.xml target/META-INF/context.xml
+cd target
+jar -uvf iTrust-23.0.0.war META-INF/context.xml
+cd ..
 git push -f origin master:production
 </command>
     </hudson.tasks.Shell>
