@@ -1,0 +1,5 @@
+---
+# ansible_python_interpreter: /usr/bin/python3
+iTrust_war_path: /var/lib/jenkins/workspace/itrust-packaging-job/iTrust-v23/iTrust/target/iTrust-23.0.0.war
+post_build_playbook_path: /etc/playbooksRepo/devops-milestone3
+...
