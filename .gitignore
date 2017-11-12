@@ -1,3 +1,7 @@
 *.key
 *.pem
 *.retry
+
+ssh_keys/
+*.log
+.DS_Store

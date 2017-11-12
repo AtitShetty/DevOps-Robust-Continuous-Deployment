@@ -11,6 +11,7 @@
   "devDependencies": {
     "http-proxy": "^1.9.0",
     "request": "^2.54.0",
-    "random-js": "^1.0.8"
+    "random-js": "^1.0.8",
+    "redis": "^0.12.1"
   }
 }

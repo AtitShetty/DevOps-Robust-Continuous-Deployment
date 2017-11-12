@@ -4,6 +4,9 @@ var exec = require('child_process').exec;
 var request = require("request");
 var fs = require('fs');
 var Random = require('random-js');
+var redis = require('redis')
+
+var client = redis.createClient(6379, '127.0.0.1', {})
 
 // var PROD = 'http://127.0.0.1:5060';
 // var CANARY  = 'http://127.0.0.1:9090';
@@ -29,14 +32,22 @@ var infrastructure =
 
     var server  = http.createServer(function(req, res)
     {
-      if (rand.bool(CANARY_PROB)) {
-        console.log("processing request through canary server");
-        proxy.web( req, res, {target: nodes[1] } );  
-      }
-      else{
-        console.log("processing request through production server");
-        proxy.web( req, res, {target: nodes[0] } );
-      }
+      client.exists("canary_flag", function(err, value) {
+        if (value == 1) {
+          if (rand.bool(CANARY_PROB)) {
+            console.log("processing request through canary server");
+            proxy.web( req, res, {target: nodes[1] } );  
+          }
+          else{
+            console.log("processing request through production server");
+            proxy.web( req, res, {target: nodes[0] } );
+          }
+        }
+        else {
+          console.log("processing request through production server");
+          proxy.web( req, res, {target: nodes[0] } );
+        }
+      });
       
     });
     server.listen(3000);
@@ -53,12 +64,12 @@ var infrastructure =
     };
 
     request(options, function(err,res,body){
-      if(res.statusCode == 500){
+      if(!res || res.statusCode == 500){
         console.log("canary server is down");
         CANARY_PROB = 0.0;
-        TARGET = nodes[0];
       }
       else {
+        CANARY_PROB = 0.5;
         console.log ("canary server is up");
       }
     });

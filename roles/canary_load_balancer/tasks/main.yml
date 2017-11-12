@@ -10,6 +10,7 @@
     - build-essential
     - npm
     - python-pip
+    - redis-server
 
 - name: Create symbolic link node for nodejs
   file:
@@ -31,15 +32,42 @@
     - package.json
     - checkbox_servers
 
-- name: run npm install
+- name: Create folder to place redis-client files
+  file:
+    path: /etc/git/redis-client
+    state: directory
+
+- name: copy redis-client files
+  copy:
+    src: files/redis-client.js
+    dest: /etc/git/redis-client/
+
+- name: copy redis-client files
+  copy:
+    src: files/package_redis-cli.json
+    dest: /etc/git/redis-client/package.json
+
+- name: run npm install for load_balancer
   shell: npm install
   args:
     chdir: /etc/git/load_balancer/
 
+- name: run npm install for redis-client
+  shell: npm install
+  args:
+    chdir: /etc/git/redis-client/
+
 - name: "Install forever to run load_balancer proxy server"
   shell: npm install -g forever
 
-# - name: start load balancer
-#   shell: forever start --watch --watchDirectory ./ load_balancer.js
-#   args:
-#     chdir: /etc/git/load_balancer/
+- name: start load balancer
+  shell: forever start --watch --watchDirectory ./ load_balancer.js
+  become: no
+  args:
+    chdir: /etc/git/load_balancer/
+
+- name: start redis-client
+  shell: forever start --watch --watchDirectory ./ redis-client.js
+  become: no
+  args:
+    chdir: /etc/git/redis-client/
