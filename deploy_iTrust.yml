@@ -4,4 +4,10 @@
   become: true
   roles:
     - role: run_iTrust
+
+- hosts: mysql
+  gather_facts: False
+  become: true
+  roles:
+    - role: run_iTrust_mysql_server
 ...

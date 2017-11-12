@@ -1,4 +1,5 @@
 ---
 username: "admin"
 jenkinspassword: "password"
+mysql_server_ip: "localhost"
 ...

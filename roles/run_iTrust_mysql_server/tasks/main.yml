@@ -1,0 +1,25 @@
+---
+- name: Install mysql-server
+  include_role:
+    name: mysql_setup
+    private: yes
+
+- name: Open mysql Import
+  ufw:
+    state: allow
+    port: '3306'
+
+- name: Take mysql database dump for iTrust_war_path
+  local_action: "shell mysqldump itrust > /tmp/iTrust_Dump.sql"
+
+- name: Copy iTrust database dump
+  copy:
+    src: /tmp/iTrust_Dump.sql
+    dest: /tmp/iTrust_Dump.sql
+
+- name: Ensure that itrust database exists
+  command: mysql -u root --execute "CREATE DATABASE IF NOT EXISTS itrust;"
+
+- name: Import tables from sql dump
+  shell: mysql itrust < /tmp/iTrust_Dump.sql
+...

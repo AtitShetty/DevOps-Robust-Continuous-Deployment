@@ -48,4 +48,21 @@
 - name: Get playbook for post build ansible scripts
   include_role:
     name: clone_playbook
+
+- name: stat /etc/iTrust_mysql_config
+  stat:
+    path: /etc/iTrust_mysql_config
+  register: iTrust_mysql_config_stat
+
+- name: Ensure that directory exists for copying context.xml
+  file:
+    path: /etc/iTrust_mysql_config
+    state: directory
+  when: iTrust_mysql_config_stat.stat.exists == False
+
+- name: Copy iTrust context.xml for mysql
+  template:
+    src: context.xml.j2
+    dest: /etc/iTrust_mysql_config/context.xml
+    mode: 0666
 ...

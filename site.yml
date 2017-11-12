@@ -26,6 +26,6 @@
 
   roles:
     - role: jenkins_setup
-    - role: itrust_jenkins_job_setup
+    - { role: itrust_jenkins_job_setup, mysql_server_ip: 192.168.35.10}
     - role: checkboxio_jenkins_job_setup
 ...
