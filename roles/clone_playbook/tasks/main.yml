@@ -37,4 +37,5 @@
   with_items:
     - deployment_env.pem
     - mysql.pem
+    - deployment_env_2.pem
 ...
