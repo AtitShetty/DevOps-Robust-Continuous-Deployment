@@ -4,4 +4,4 @@ host1 ansible_ssh_host=192.168.35.10 ansible_ssh_user=ubuntu ansible_ssh_private
 
 [remote]
 
-host2 ansible_ssh_host=192.168.33.20 ansible_ssh_user=ubuntu ansible_ssh_private_key_file=deployment_key.pem
+host2 ansible_ssh_host=192.168.33.20 ansible_ssh_user=ubuntu ansible_ssh_private_key_file=deployment_env.pem
