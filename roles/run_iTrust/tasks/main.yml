@@ -13,7 +13,12 @@
   include_role:
     name: tomcat_setup
     private: yes
-    
+
+- name: Install mysql-server
+  include_role:
+    name: mysql_setup
+    private: yes
+
 - name: Copy the iTrust war file to Tomcat's deployment folder
   copy:
     src: "{{ iTrust_war_path }}"
