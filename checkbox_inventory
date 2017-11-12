@@ -1,0 +1,6 @@
+[remote]
+production ansible_host=192.168.33.11 ansible_user=ubuntu ansible_ssh_private_key_file=ssh_keys/production/virtualbox/private_key
+canary ansible_host=192.168.33.12 ansible_user=ubuntu ansible_ssh_private_key_file=ssh_keys/canary/virtualbox/private_key
+
+[load_balancer]
+balancer ansible_host=192.168.33.13 ansible_user=ubuntu ansible_ssh_private_key_file=ssh_keys/balancer/virtualbox/private_key

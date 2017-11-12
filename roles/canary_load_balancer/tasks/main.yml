@@ -1,0 +1,45 @@
+---
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    allow_unauthenticated: yes
+    update_cache: yes
+  with_items:
+    - nodejs
+    - build-essential
+    - npm
+    - python-pip
+
+- name: Create symbolic link node for nodejs
+  file:
+    src: /usr/bin/nodejs
+    path: /usr/bin/node
+    state: link
+
+- name: Create folder to place load balancer files
+  file:
+    path: /etc/git/load_balancer
+    state: directory
+
+- name: copy load_balancer files
+  copy:
+    src: files/{{item}}
+    dest: /etc/git/load_balancer/
+  with_items:
+    - load_balancer.js
+    - package.json
+    - checkbox_servers
+
+- name: run npm install
+  shell: npm install
+  args:
+    chdir: /etc/git/load_balancer/
+
+- name: "Install forever to run load_balancer proxy server"
+  shell: npm install -g forever
+
+# - name: start load balancer
+#   shell: forever start --watch --watchDirectory ./ load_balancer.js
+#   args:
+#     chdir: /etc/git/load_balancer/

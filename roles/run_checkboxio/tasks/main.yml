@@ -35,7 +35,7 @@
 - name: Create symbolic link node for nodejs
   file:
     src: /usr/bin/nodejs
-    path: /usr/bin/node\
+    path: /usr/bin/node
     state: link
 
 - name: Create a mongodb service
@@ -85,7 +85,7 @@
 
 - name: Create folder to clone checkbox.io repo
   file:
-    path: /etc/git/checbox.io
+    path: /etc/git/checkbox.io
     state: directory
   when: gitstat.stat.exists == False
 
@@ -93,7 +93,7 @@
   git:
     repo: https://github.com/AtitShetty/checkbox.io.git
     dest: /etc/git/checkbox.io
-    version: production
+    version: "{{inventory_hostname}}"
 
 - name: Install npm packages for checbox.io
   shell: npm install --prefix /etc/git/checkbox.io/server-side/site/
