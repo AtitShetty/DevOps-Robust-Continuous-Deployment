@@ -7,6 +7,15 @@
       raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
       changed_when: False
     - setup:
+  vars:
+    iTrust_inventory_path: "{{ playbook_dir }}"
+    checkbox_inventory_path: "{{ playbook_dir }}"
+    host1_key: deployment_env.pem
+    host2_key: deployment_env.pem
+    host3_key: deployment_env.pem
+    host4_key: deployment_env.pem
+    host5_key: deployment_env.pem
+    host6_key: deployment_env.pem
   vars_prompt:
     - name: AWS_ACCESS_KEY_ID
       prompt: "Enter AWS access key id"
@@ -47,6 +56,7 @@
 
   roles:
     - role: jenkins_setup
-    - { role: itrust_jenkins_job_setup, mysql_server_ip: 192.168.35.10}
+    - role: itrust_jenkins_job_setup
     - role: checkboxio_jenkins_job_setup
+
 ...

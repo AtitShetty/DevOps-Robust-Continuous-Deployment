@@ -1,50 +1,118 @@
 ---
+- name: Install pip
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - python-pip
+    - python3-pip
+  become: True
+
 - name: Install boto
   pip:
    name: boto
    state: latest
 
-- name: create boto file
-  template:
-    src: boto.j2
-    dest: /home/{{ ansible_ssh_user }}/.boto
+- name: stat for ec2_ip_list
+  stat:
+    path: "{{ ec2_ip_file_address }}/ec2_ip_list"
+  register: ec2_ip_list_stat
+
+# - name: create boto file
+#   template:
+#     src: boto.j2
+#     dest: /home/{{ ansible_ssh_user }}/.boto
 
 - name: Provision EC2 Box
   ec2:
-   key_name: "{{ ec2_keypair }}"
-   group_id: "{{ ec2_security_group }}"
-   instance_type: "{{ ec2_instance_type }}"
-   image: "{{ ec2_image }}"
-   vpc_subnet_id: "{{ ec2_subnet_ids|random }}"
-   region: "{{ ec2_region }}"
-   instance_tags: '{"Name":"{{ec2_tag_Name}}","Type":"{{ec2_tag_Type}}","Environment":"{{ec2_tag_Environment}}"}'
-   assign_public_ip: yes
-   wait: true
-   count: 5
+    aws_access_key: "{{ AWS_ACCESS_KEY_ID }}"
+    aws_secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
+    key_name: "{{ ec2_keypair }}"
+    group_id: "{{ ec2_security_group }}"
+    instance_type: "{{ ec2_instance_type }}"
+    image: "{{ ec2_image }}"
+    vpc_subnet_id: "{{ ec2_subnet_ids|random }}"
+    region: "{{ ec2_region }}"
+    instance_tags: '{"Name":"{{ec2_tag_Name}}","Type":"{{ec2_tag_Type}}","Environment":"{{ec2_tag_Environment}}"}'
+    assign_public_ip: yes
+    wait: true
+    count: 6
+  when: ec2_ip_list_stat.stat.exists == False
   register: ec2
+
 
 - debug:
     var: "{{ item }}"
   with_items: "{{ec2.instances}}"
+  when: ec2_ip_list_stat.stat.exists == False
 
-- add_host:
-    name: "{{ item.public_ip }}"
-    groups: tag_Type_"{{ec2_tag_Type}}",tag_Environment_"{{ec2_tag_Environment}}"
-    ec2_region: "{{ec2_region}}"
-    ec2_tag_Name: "{{ec2_tag_Name}}"
-    ec2_tag_Type: "{{ec2_tag_Type}}"
-    ec2_tag_Environment: "{{ec2_tag_Environment}}"
-    ec2_ip_address: "{{item.public_ip}}"
-  with_items: "{{ec2.instances}}"
+# - add_host:
+#     name: "{{ item.public_ip }}"
+#     groups: tag_Type_"{{ec2_tag_Type}}",tag_Environment_"{{ec2_tag_Environment}}"
+#     ec2_region: "{{ec2_region}}"
+#     ec2_tag_Name: "{{ec2_tag_Name}}"
+#     ec2_tag_Type: "{{ec2_tag_Type}}"
+#     ec2_tag_Environment: "{{ec2_tag_Environment}}"
+#     ec2_ip_address: "{{item.public_ip}}"
+#   with_items: "{{ec2.instances}}"
 
-- name: file write
-  lineinfile:
-    dest: /home/ubuntu/ip_address.txt
-    line: "{{ item.public_ip }}"
-    state: present
-  with_items: "{{ec2.instances}}"
+# - name: Keep a record of instances
+#   lineinfile:
+#     dest: /home/ubuntu/ip_address.txt
+#     line: "{{ item.public_ip }}"
+#     state: present
+#   with_items: "{{ec2.instances}}"
+
+- name: Create dynamic variables to save ec2 IPs
+  set_fact:
+    host1: "{{ ec2.instances[0].public_ip }}"
+    host2: "{{ ec2.instances[1].public_ip }}"
+    host3: "{{ ec2.instances[2].public_ip }}"
+    host4: "{{ ec2.instances[3].public_ip }}"
+    host5: "{{ ec2.instances[4].public_ip }}"
+    host6: "{{ ec2.instances[5].public_ip }}"
+  when: ec2_ip_list_stat.stat.exists == False
 
 - name: Wait for the instances to boot by checking the ssh port
   wait_for: host="{{item.public_ip}}" port=22 delay=60 timeout=320 state=started
   with_items: "{{ec2.instances}}"
+  when: ec2_ip_list_stat.stat.exists == False
+
+- name: stat for "{{ ec2_ip_file_address }}"
+  stat:
+    path: "{{ ec2_ip_file_address }}"
+  register: ec2_ip_file_address_stat
+
+- name: create "{{ ec2_ip_file_address }}" directory
+  file:
+    path: "{{ ec2_ip_file_address }}"
+    state: directory
+  when: ec2_ip_file_address_stat.stat.exists == False
+  become: True
+
+- name: save ec2 IP addresses
+  template:
+    src: ec2_ip_list.j2
+    dest: "{{ ec2_ip_file_address }}/ec2_ip_list"
+  when: ec2_ip_list_stat.stat.exists == False
+  become: True
+
+- name: create itrust_inventory
+  template:
+    src: iTrust_inventory.j2
+    dest: "{{ iTrust_inventory_path }}/iTrust_inventory"
+  when: ec2_ip_list_stat.stat.exists == False
+
+- name: create checkbox_inventory
+  template:
+    src: checkbox_inventory.j2
+    dest: "{{ checkbox_inventory_path }}/checkbox_inventory"
+  when: ec2_ip_list_stat.stat.exists == False
+
+- name: create jenkins host variable
+  template:
+    src: jenkins.yml.j2
+    dest: "{{ checkbox_inventory_path }}/host_vars/jenkins.yml"
+  when: ec2_ip_list_stat.stat.exists == False
 ...

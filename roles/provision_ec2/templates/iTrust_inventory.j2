@@ -1,0 +1,15 @@
+[mysql]
+
+host1 ansible_ssh_host={{ host1 }} ansible_ssh_user=ubuntu ansible_ssh_private_key_file={{ host1_key }} ansible_python_interpreter=/usr/bin/python3
+
+[remote]
+
+host2 ansible_ssh_host={{ host2 }} ansible_ssh_user=ubuntu ansible_ssh_private_key_file={{ host2_key }} ansible_python_interpreter=/usr/bin/python3
+
+host3 ansible_ssh_host={{ host3 }} ansible_ssh_user=ubuntu ansible_ssh_private_key_file={{ host3_key }} ansible_python_interpreter=/usr/bin/python3
+
+host4 ansible_ssh_host={{ host4 }} ansible_ssh_user=ubuntu ansible_ssh_private_key_file={{ host3_key }} ansible_python_interpreter=/usr/bin/python3
+
+host5 ansible_ssh_host={{ host5 }} ansible_ssh_user=ubuntu ansible_ssh_private_key_file={{ host4_key }} ansible_python_interpreter=/usr/bin/python3
+
+host6 ansible_ssh_host={{ host6 }} ansible_ssh_user=ubuntu ansible_ssh_private_key_file={{ host6_key }} ansible_python_interpreter=/usr/bin/python3

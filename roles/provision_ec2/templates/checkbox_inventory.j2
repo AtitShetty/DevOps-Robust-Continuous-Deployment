@@ -1,0 +1,6 @@
+[remote]
+production ansible_host={{ host2 }} redis_master={{ host1 }} ansible_user=ubuntu ansible_ssh_private_key_file={{ host2_key }}
+canary ansible_host={{ host3 }} redis_master={{ host1 }} ansible_user=ubuntu ansible_ssh_private_key_file={{ host3_key }}
+
+[load_balancer]
+balancer ansible_host={{ host1 }} ansible_user=ubuntu ansible_ssh_private_key_file={{ host1_key }}

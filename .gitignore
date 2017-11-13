@@ -5,3 +5,8 @@
 ssh_keys/
 *.log
 .DS_Store
+
+checkbox_inventory
+iTrust_inventory
+
+host_vars/jenkins
