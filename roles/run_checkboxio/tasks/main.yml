@@ -116,8 +116,13 @@
     name: nginx
     state: restarted
 
+- name: stop all previous version
+  shell: forever stopall
+  become: no
+
 - name: Start checbox.io server
   shell: forever start  server.js
   args:
     chdir: /etc/git/checkbox.io/server-side/site/
+  become: no
 ...

@@ -60,6 +60,10 @@
 - name: "Install forever to run load_balancer proxy server"
   shell: npm install -g forever
 
+- name: stop previous verison of forever runs
+  shell: forever stopall
+  become: no
+
 - name: start load balancer
   shell: forever start --watch --watchDirectory ./ load_balancer.js
   become: no
