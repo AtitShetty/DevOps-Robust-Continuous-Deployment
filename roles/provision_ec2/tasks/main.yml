@@ -13,6 +13,7 @@
   pip:
    name: boto
    state: latest
+  become: yes
 
 - name: stat for ec2_ip_list
   stat:

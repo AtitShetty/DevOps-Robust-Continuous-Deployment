@@ -10,3 +10,5 @@ checkbox_inventory
 iTrust_inventory
 
 host_vars/jenkins
+
+aws_stuff

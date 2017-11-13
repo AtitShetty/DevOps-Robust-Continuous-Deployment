@@ -30,7 +30,11 @@
   with_items:
     - load_balancer.js
     - package.json
-    - checkbox_servers
+
+- name: create checkbox servers file
+  template:
+    src: checkbox_servers.j2
+    dest: /etc/git/load_balancer/checkbox_servers
 
 - name: Create folder to place redis-client files
   file:

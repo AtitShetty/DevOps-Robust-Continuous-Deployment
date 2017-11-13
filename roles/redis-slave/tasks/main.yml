@@ -57,5 +57,12 @@
     replace: 'slaveof {{redis_master}} {{redis_port}}'
   when: checkslaveconf.rc == 0
 
+- name: slave task - updating redis master password
+  replace:
+    dest: /etc/redis/redis.conf
+    regexp: '# masterauth <master-password>'
+    replace: 'masterauth abcde'
+
+
 - name: Restart redis service
   shell: systemctl restart redis-server.service
