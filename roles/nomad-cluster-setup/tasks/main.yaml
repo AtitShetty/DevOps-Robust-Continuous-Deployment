@@ -1,0 +1,53 @@
+---
+- name: Disable Firewall
+  service: name=ufw state=stopped
+
+- name: Install HTTPS Apt Packages
+  apt: name={{ item }} update_cache=yes
+  with_items:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    allow_unauthenticated: yes
+    update_cache: yes
+  with_items:
+    - nginx
+    - nodejs
+    - build-essential
+    - git
+    - npm
+    - python-pip
+
+- name: install pymongo
+  pip:
+    name: pymongo
+    state: present
+
+- name: Set mongodb environment variables
+  blockinfile:
+    path: /etc/environment
+    block: |
+      MONGO_PORT="3002"
+      MONGO_IP="{{mongo_host}}"
+      MONGO_USER="admin"
+      MONGO_PASSWORD="{{ mongodb_password }}"
+      MAIL_USER=""
+      MAIL_PASSWORD=""
+      MAIL_SMTP="mock"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+
+- name: Copy Job File for running Checkbox.io on nomad
+  become: no
+  copy: src=templates/service.nomad dest=/home/{{ ansible_user }}/service.nomad
+
+roles:
+
+  - role: brianshumate.nomad
+    nomad_bind_address: 0.0.0.0
+    nomad_docker_enable: yes
