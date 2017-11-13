@@ -35,7 +35,7 @@
   replace:
     dest: /etc/redis/redis.conf
     regexp: 'bind 127.0.0.1'
-    replace: 'bind 127.0.0.1 {{ansible_host}}'
+    replace: '# bind 127.0.0.1'
   when: checkredisconf.rc == 1
 
 - name: Restart redis service
@@ -56,12 +56,6 @@
     regexp: 'tcp-keepalive 300'
     replace: 'tcp-keepalive 60'
   when: checktcpconf.rc == 0
-
-- name: master task - creating redis master password
-  replace:
-    dest: /etc/redis/redis.conf
-    regexp: '# requirepass foobared'
-    replace: 'requirepass abcde'
 
 - name: master task - updating maxmemory-policy
   replace:
