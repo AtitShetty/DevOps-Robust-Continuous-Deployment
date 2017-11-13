@@ -1,15 +1,4 @@
 ---
-- hosts: remote
-  gather_facts: no
-  pre_tasks:
-    - name: install python 2
-      raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
-      changed_when: False
-    - setup:
-  become: true
-  roles:
-    - role: run_checkboxio
-
 - hosts: load_balancer
   gather_facts: no
   pre_tasks:
@@ -19,5 +8,20 @@
     - setup:
   become: true
   roles:
+    - role: redis-master
     - role: canary_load_balancer
+    # Add roles here for installing and setting up redis on balancer server and adding slaves as the production and canary nodes
+
+- hosts: remote
+  gather_facts: no
+  pre_tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
+      changed_when: False
+    - setup:
+  become: true
+  roles:
+    - role: redis-slave
+    - role: run_checkboxio
+    
 ...

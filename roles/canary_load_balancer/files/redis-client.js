@@ -5,7 +5,7 @@ var fs      = require('fs')
 var app = express()
 // REDIS
 var client = redis.createClient(6379, '127.0.0.1', {})
-
+client.auth('abcde');
 ///////////// WEB ROUTES
 
 // Add hook to make it easier to get all visited URLS.
