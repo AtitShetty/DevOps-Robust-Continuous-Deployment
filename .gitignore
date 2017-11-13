@@ -9,6 +9,6 @@ ssh_keys/
 checkbox_inventory
 iTrust_inventory
 
-host_vars/jenkins
+host_vars/jenkins.yml
 
 aws_stuff
