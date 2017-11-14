@@ -14,6 +14,23 @@
   roles:
     - role: nomad-cluster-setup
 
+- hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: Install required packages on ansible host
+      apt:
+        name: "{{ item }}"
+        state: present
+        allow_unauthenticated: yes
+        update_cache: yes
+      with_items:
+        - software-properties-common
+        - zip
+        - unzip
+        - python-pip
+        - python-netaddr
+      become: yes
+
 - hosts: nomad_instances
   gather_facts: no
   pre_tasks:
@@ -38,6 +55,10 @@
     - name: restart nomad
       service: name=nomad state=restarted
       when: nomad_node_role == "client"
+
+    - name: "stop pre-running job"
+      shell: nomad stop checkboxio_nomad
+      when: nomad_node_role == "server"
 
     - name: "Start Nomad Job"
       shell: nomad run service.nomad
