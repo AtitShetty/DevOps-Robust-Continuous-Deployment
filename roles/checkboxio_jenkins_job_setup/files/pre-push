@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "Auto deployment triggered"
+cd /etc/playbooksRepo/devops-milestone3
+ansible-playbook deploy_checkboxio.yml -i staging.yml
