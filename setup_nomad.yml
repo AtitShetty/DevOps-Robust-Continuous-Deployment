@@ -1,0 +1,41 @@
+---
+- hosts: nodes
+  gather_facts: no
+  pre_tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
+      changed_when: False
+    - setup:
+  become: true
+  tasks:
+    - include_role:
+        name: mongo-setup
+      when: nomad_node_role == "server"
+  roles:
+    - role: nomad-cluster-setup
+
+- hosts: nomad_instances
+  gather_facts: no
+  pre_tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
+      changed_when: False
+    - setup:
+  become: true
+  roles:
+    - { role: brianshumate.nomad,  nomad_bind_address: 0.0.0.0, nomad_docker_enable: yes }
+  tasks:
+    - name: update nomad client conf - enable raw_exec driver
+      blockinfile:
+        path: /etc/nomad.d/client.hcl
+        insertafter: "client {"
+        block: |
+          options = {
+            "driver.raw_exec.enable" = "1"
+          }
+      when:  nomad_node_role == "client"
+
+    - name: restart nomad
+      service: name=nomad state=restarted
+      when: nomad_node_role == "client"
+...

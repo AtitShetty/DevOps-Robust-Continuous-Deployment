@@ -111,6 +111,12 @@
     dest: "{{ checkbox_inventory_path }}/checkbox_inventory"
   when: ec2_ip_list_stat.stat.exists == False
 
+- name: create nomad_inventory
+  template:
+    src: nomad_inventory.j2
+    dest: "{{ checkbox_inventory_path }}/nomad_inventory"
+  when: ec2_ip_list_stat.stat.exists == False
+
 - name: create jenkins host variable
   template:
     src: jenkins.yml.j2

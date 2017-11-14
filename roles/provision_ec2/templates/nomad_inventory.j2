@@ -1,0 +1,12 @@
+[nodes]
+nomad1 nomad_node_role=server mongo_host={{host1}} nomad_iface=enp0s8 consul_node_role=bootstrap consul_iface=enp0s8 consul_client_address={{host1}} ansible_host={{host1}} ansible_user=ubuntu ansible_ssh_private_key_file=deployment_env.pem
+nomad2 nomad_node_role=client mongo_host={{host1}} nomad_iface=enp0s8 consul_node_role=client consul_iface=enp0s8 consul_client_address={{host2}} ansible_host={{host2}} ansible_user=ubuntu ansible_ssh_private_key_file=deployment_env.pem
+nomad3 nomad_node_role=client mongo_host={{host1}} nomad_iface=enp0s8 consul_node_role=client consul_iface=enp0s8 consul_client_address={{host3}} ansible_host={{host3}} ansible_user=ubuntu ansible_ssh_private_key_file=deployment_env.pem
+
+[nomad_instances]
+[nomad_instances:children]
+nodes
+
+[consul_instances]
+[consul_instances:children]
+nodes

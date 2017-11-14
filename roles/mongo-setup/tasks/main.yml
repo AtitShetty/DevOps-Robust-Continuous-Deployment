@@ -20,6 +20,7 @@
   with_items:
     - mongodb
     - build-essential
+    - python-pip
 
 - name: Create a mongodb service
   copy:
@@ -32,6 +33,11 @@
     state: started
     enabled: yes
 
+- name: install pymongo
+  pip:
+    name: pymongo
+    state: present
+
 - name: Add admin user to mongodb
   mongodb_user:
     database: admin
@@ -39,6 +45,12 @@
     password: "{{ mongodb_password }}"
     state: present
     roles: userAdminAnyDatabase
+
+- name: Change mongo conf bind_ip
+  replace:
+    dest: /etc/mongodb.conf
+    regexp: 'bind_ip = 127.0.0.1'
+    replace: '# bind_ip = 127.0.0.1'
 
 - name: Restart mongodb service
   service:

@@ -24,10 +24,11 @@
     - npm
     - python-pip
 
-- name: install pymongo
-  pip:
-    name: pymongo
-    state: present
+- name: Create symbolic link node for nodejs
+  file:
+    src: /usr/bin/nodejs
+    path: /usr/bin/node
+    state: link
 
 - name: Set mongodb environment variables
   blockinfile:
@@ -41,13 +42,79 @@
       MAIL_PASSWORD=""
       MAIL_SMTP="mock"
     marker: "# {mark} ANSIBLE MANAGED BLOCK"
+  when: nomad_node_role == "client"
+
+- name: Update the bash profile
+  shell: . /etc/environment
+  when: nomad_node_role == "client"
+
+- name: stat /etc/git where checkbox.io will be cloned
+  stat:
+    path: /etc/git/checkbox.io
+  register: gitstat
+
+- name: Create folder to clone checkbox.io repo
+  file:
+    path: /etc/git/checkbox.io
+    state: directory
+  when: gitstat.stat.exists == False
+
+- name: Checkout checbox.io get repo
+  git:
+    repo: https://github.com/AtitShetty/checkbox.io.git
+    dest: /etc/git/checkbox.io
+    version: "nomad"
+  when: nomad_node_role == "client"
+
+- name: Install npm packages for checbox.io
+  shell: npm install --prefix /etc/git/checkbox.io/server-side/site/
+  when: nomad_node_role == "client"
+
+- name: "Install forever to run checbox.io server"
+  shell: npm install -g forever
+  when: nomad_node_role == "client"
+
+- name: Overwrite nginx.conf
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx
+  when: nomad_node_role == "client"
+
+- name: Overwrite nginx default
+  copy:
+    src: default
+    dest: /etc/nginx/sites-available/
+  when: nomad_node_role == "client"
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted
+  when: nomad_node_role == "client"
+
+- name: Add Docker GPG Key
+  apt_key: url=https://download.docker.com/linux/ubuntu/gpg state=present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo="deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state=present
+
+- name: Install Docker CE
+  apt: name=docker-ce state=present update_cache=yes
+
+- name: Enable Docker at Startup
+  service: name=docker state=started enabled=yes
+
+- name: add user mod to docker
+  command: usermod -aG docker {{ ansible_user }}
 
 - name: Copy Job File for running Checkbox.io on nomad
   become: no
-  copy: src=templates/service.nomad dest=/home/{{ ansible_user }}/service.nomad
+  copy: src=service.nomad dest=/home/{{ ansible_user }}/service.nomad
+  when: nomad_node_role == "server"
 
-roles:
-
-  - role: brianshumate.nomad
-    nomad_bind_address: 0.0.0.0
-    nomad_docker_enable: yes
+- name: Copy Job File for running Checkbox.io on nomad
+  become: yes
+  copy: src=run_job.sh dest=/etc/git/ mode=0777
+  when: nomad_node_role == "client"
