@@ -18,6 +18,6 @@ Feature Flag toggling has been implemented in this milestone through redis maste
 
 # Contribution CTCI
 - Deployment of CheckBox.io and iTrust & Rolling Update - Atit Shetty
-- AWS Automatic EC2 Instance Spinning - Abhimanyu Jataria
+- Automatic AWS EC2 Instance Spinning - Abhimanyu Jataria
 - Nomad Cluster Implemementation & canary Release - Ankur Garg
 - Redis FeatureFlag Implementation - Debosmita Das
