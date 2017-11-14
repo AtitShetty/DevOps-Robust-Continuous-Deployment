@@ -38,4 +38,8 @@
     - name: restart nomad
       service: name=nomad state=restarted
       when: nomad_node_role == "client"
+
+    - name: "Start Nomad Job"
+      shell: nomad run service.nomad
+      when: nomad_node_role == "server"
 ...
