@@ -1,4 +1,4 @@
-# CSC 519 Devops [Milestone3](https://github.com/CSC-DevOps/Course/blob/master/Project/M3.md)
+# [CSC 519 Devops](https://github.com/CSC-DevOps/Course/) [Milestone3](https://github.com/CSC-DevOps/Course/blob/master/Project/M3.md)
 
 ## Team Members
 - Abhimanyu Jataria(ajatari)
