@@ -36,7 +36,7 @@ This task required us to set up a Jenkins server that will deploy iTrust and che
 
 - The only difference with deployment is that, while deployment can occur in parallel across all the hosts, rolling updates are peformed are performed on one host at a time.
 
-- We have achieved this by adding a ``` serial ``` parameter in the playbook ``` deploy_iTrust ```. This will force the ansible playbook to be run in one host at a time, for all the hosts belonging to a certain group.
+- We have achieved this by adding a ``` serial ``` parameter in the playbook ``` deploy_iTrust.yml ```. This will force the ansible playbook to be run in one host at a time, for all the hosts belonging to a certain group.
 
 - As we have seen before, this playbook is triggered from pre-push hook when a push to production is triggered.
 
