@@ -1,6 +1,6 @@
 # CSC 519 Devops-milestone3
 
-# Team Members
+## Team Members
 - Abhimanyu Jataria(ajatari)
 - Ankur Garg(agarg12)
 - Atit Shetty(akshetty)
@@ -16,7 +16,7 @@ Feature Flag toggling has been implemented in this milestone through redis maste
 - Once the flag is set on, the access to the /create route is enabled from both master and slave.
 - When the flag is off, the /create route is non-accessible from either master or slave.
 
-# Contributions
+## Contributions
 - Deployment of CheckBox.io and iTrust & Rolling Update - Atit Shetty
 - Automatic AWS EC2 Instance Spinning - Abhimanyu Jataria
 - Nomad Cluster Implemementation & canary Release - Ankur Garg
