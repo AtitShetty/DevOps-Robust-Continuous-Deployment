@@ -55,7 +55,7 @@ Feature Flag toggling has been implemented in this milestone through redis maste
 - When the flag is off, the /create route is non-accessible from either master or slave.
 
 ## Contributions
-- Deployment of CheckBox.io and iTrust & Rolling Update - Atit Shetty
+- Deployment and Rolling Updates - Atit Shetty
 - Automatic AWS EC2 Instance Spinning - Abhimanyu Jataria
 - Nomad Cluster Implemementation & canary Release - Ankur Garg
 - Redis FeatureFlag Implementation - Debosmita Das
