@@ -60,6 +60,8 @@ We also have a canary flag setup in redis which can also be used to enable/disab
 	- First if the canary is down, then all traffic is re-routed to production server.
 	- Second, if the canary flag itself is turned off, then also, load-balancer will route all traffic to production.
 
+The files for load balancer are at [./roles/mongo-setup/files](./roles/canary_load_balancer/files) <br />
+
 ## Redis Setup + Feature Flags:
 
 Feature Flag toggling has been implemented in this milestone through redis master-slave architecure topology. We have used 3 AWS EC2 instances designating 1 as the master and 2 as read-only slaves. The master-slave architecture has been configured in such a way that user can write data on Redis master only and Redis slaves will get the replica of the master data after authenticating themselves with master authentication password.
@@ -89,6 +91,7 @@ To run the checkbox.io server.js script as a nomad, we have used `raw_exec` driv
 We have created a common mongodb server for checkbox.io in the nomad master. Both client nodes connect to this server for database access.<br />
 This is done to ensure that when a client node dies and nomad restarts the job on another node, the database is still the same and no data is lost. <br />
 
+The mongo db setup role is at [./roles/mongo-setup/files](./roles/mongo-setup/files) <br />
 The files service.nomad, run_job.sh are present in [./roles/nomad-cluster-setup/files](./roles/nomad-cluster-setup/files) <br />
 
 ## Screencasts: 
