@@ -42,24 +42,47 @@ This task required us to set up a Jenkins server that will deploy iTrust and che
 
 - In this way we have achieved rolling updates.
 
+## Checkbox.io Canary/Production Server
+This task required us to deploy checkbox.io on two different servers. One with production branch and one with some changes (a canary server).
+
+We have created two different branches for this in the checkbox.io repository. The jenkins job for checkbox.io deploys these two versions on two different machines. 
+
+In total we have created 3 AWS EC2 instances for this task. (This is done in a single run of ansible script which also generates instances for itrust deployement)
+
+The first server runs production branch code, the second server runs canary branch code. Each of them also run redis-slaves (explained below)
+The third server runs the following things:
+- A load balancer: which diverts some traffic to production and some to canary. It also keeps checking whether the canary server is up and running. If it detects that the canary server is down, all traffic is re-routed to production server.
+- A redis master node (explained below)
+- A Redis-client: This server also runs a small node-js server to access the flags on redis server. This is used to switch the Feature Flag and Canary Flag on/off.
+
+- There are two cases: 
+	- First if the canary is down, then all traffic is re-routed to production server.
+	- Second, if the canary flag itself is turned off, then also, load-balancer will route all traffic to production.
+
+## Redis Implementation:
+
+Feature Flag toggling has been implemented in this milestone through redis master-slave architecure topology. We have used 3 AWS EC2 instances designating 1 as the master and 2 as read-only slaves. The master-slave architecture has been configured in such a way that user can write data on Redis master only and Redis slaves will get the replica of the master data after authenticating themselves with master authentication password.
+
+Redis master is run on one server and redis slaves are run on both production and canary nodes. 
+
+- We have used the application checkbox.io for demonstrating feature flag toggling through Redis.
+- checkbox.io has been deployed on the Redis slaves - production and canary servers.
+- For demonstrating the feature flag, we have used the route "/api/service/create" in server.js of checkbox.io application.
+	- This enables/disables the ability to create a new survey.
+- Once the flag is set on, the access to the /create route is enabled from both production and canary servers.
+- When the flag is off, the /create route is non-accessible from both production and canary servers.
+
+Redis is also being used to enable/disable a CanaryServer Flag which starts/stops routing of traffic to canary by load balancer.
+
 ## Screencasts: 
 
 - [Screencast for Deployment and Rolling Updates](https://youtu.be/nz1o3ZfMQMs)
 - [Screencast for Checkbox.io Deployment + Redis Feature Flag + Canary Server](https://www.youtube.com/watch?v=NE_TqApmYmc)
 - [Screencast for Nomad Cluster Setup](https://www.youtube.com/watch?v=IrVbKKOrhCs)
 
-## Redis Implementation:
-
-Feature Flag toggling has been implemented in this milestone through redis master-slave architecure topology. We have used 3 AWS EC2 instances designating 1 as the master and 2 as read-only slaves. The master-slave architecture has been configured in such a way that user can write data on Redis master only and Redis slaves will get the replica of the master data after authenticating themselves with master authentication password.
-
-- We have used the application checkbox.io for demonstrating feature flag toggling through Redis.
-- checkbox.io has been deployed on the Redis master.
-- A route "/api/service/create" has been created in server.js of checkbox.io application.
-- Once the flag is set on, the access to the /create route is enabled from both master and slave.
-- When the flag is off, the /create route is non-accessible from either master or slave.
-
 ## Contributions
 - Deployment and Rolling Updates - Atit Shetty
 - Automatic AWS EC2 Instance Spinning - Abhimanyu Jataria
-- Nomad Cluster Implemementation & canary Release - Ankur Garg
+- Checkbox.io Canary Server Setup + Nomad Cluster Setup - Ankur Garg
 - Redis FeatureFlag Implementation - Debosmita Das
+
