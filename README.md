@@ -68,28 +68,28 @@ Redis master is run on one server and redis slaves are run on both production an
 
 - We have used the application checkbox.io for demonstrating feature flag toggling through Redis.
 - checkbox.io has been deployed on the Redis slaves - production and canary servers.
-- For demonstrating the feature flag, we have used the route "/api/service/create" in server.js of checkbox.io application.
+- For demonstrating the feature flag, we have used the route `/api/service/create` in `server.js` of `checkbox.io` application.
 	- This enables/disables the ability to create a new survey.
-- Once the flag is set on, the access to the /create route is enabled from both production and canary servers.
+- Once the flag is set on, the access to the `/create` route is enabled from both production and canary servers.
 - When the flag is off, the /create route is non-accessible from both production and canary servers.
 
 Redis is also being used to enable/disable a CanaryServer Flag which starts/stops routing of traffic to canary by load balancer.
 
 Redis master and redis salve roles are present in:
-./roles/redis-master <br />
-./roles/redis-slave
+`./roles/redis-master` <br />
+`./roles/redis-slave`
 
 ## Nomad Server Setup:
 We have setup up a 3 node nomad cluster (1 master and 2 client nodes)
 The inventory file for this is also generated automatically using ansible when the ec2 instacnces are provisioned. <br />
 
-We have used an ansible-galaxy role for setting up nomad (brianshumate.nomad) <br />
-To run the checkbox.io server.js script as a nomad, we have used `raw_exec` driver of nomad. We have created a bash script `run_job.sh` which runs `node server.js` for checkbox.io. <br />
+We have used an ansible-galaxy role for setting up nomad: `brianshumate.nomad` <br />
+To run the checkbox.io server.js script as a nomad, we have used `raw_exec` driver of nomad. We have created a bash script `run_job.sh` which runs `node server.js` for `checkbox.io`. <br />
 
 We have created a common mongodb server for checkbox.io in the nomad master. Both client nodes connect to this server for database access.<br />
 This is done to ensure that when a client node dies and nomad restarts the job on another node, the database is still the same and no data is lost. <br />
 
-The files service.nomad, run_job.sh are present in (./roles/nomad-cluster-setup/files)[./roles/nomad-cluster-setup/files] <br />
+The files service.nomad, run_job.sh are present in [./roles/nomad-cluster-setup/files](./roles/nomad-cluster-setup/files) <br />
 
 ## Screencasts: 
 
