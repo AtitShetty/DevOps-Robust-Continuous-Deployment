@@ -43,13 +43,13 @@ This task required us to set up a Jenkins server that will deploy iTrust and che
 - In this way we have achieved rolling updates.
 
 ## Checkbox.io Production/Canary Server
-This task required us to deploy `checkbox.io` on two different servers. One with `production branch` and one with some changes (a `canary server`).
+This task required us to deploy `checkbox.io` on two different servers. One with `production branch` and one with some changes (a `canary server`).<br />
 
-We have created two different branches (`production` and `canary`)for this in the checkbox.io repository. The jenkins job for checkbox.io deploys these two versions on two different machines. 
+We have created two different branches (`production` and `canary`)for this in the checkbox.io repository. The jenkins job for checkbox.io deploys these two versions on two different machines. <br />
 
-In total we have created 3 AWS EC2 instances for this task. (This is done in a single run of ansible script which also generates instances for itrust deployement)
+In total we have created 3 AWS EC2 instances for this task. (This is done in a single run of ansible script which also generates instances for itrust deployement)<br />
 
-The first server runs production branch code, the second server runs canary branch code. Each of them also run `redis-slaves` (explained below)
+The first server runs production branch code, the second server runs canary branch code. Each of them also run `redis-slaves` (explained below) <br />
 The third server runs the following things:
 - A `load balancer` (port 3000): which diverts some traffic to production and some to canary. It also keeps checking whether the canary server is up and running. If it detects that the canary server is down, all traffic is re-routed to production server.
 - A `redis-master` node (port 6379): (explained below)
@@ -74,6 +74,22 @@ Redis master is run on one server and redis slaves are run on both production an
 - When the flag is off, the /create route is non-accessible from both production and canary servers.
 
 Redis is also being used to enable/disable a CanaryServer Flag which starts/stops routing of traffic to canary by load balancer.
+
+Redis master and redis salve roles are present in:
+./roles/redis-master <br />
+./roles/redis-slave
+
+## Nomad Server Setup:
+We have setup up a 3 node nomad cluster (1 master and 2 client nodes)
+The inventory file for this is also generated automatically using ansible when the ec2 instacnces are provisioned. <br />
+
+We have used an ansible-galaxy role for setting up nomad (brianshumate.nomad) <br />
+To run the checkbox.io server.js script as a nomad, we have used `raw_exec` driver of nomad. We have created a bash script `run_job.sh` which runs `node server.js` for checkbox.io. <br />
+
+We have created a common mongodb server for checkbox.io in the nomad master. Both client nodes connect to this server for database access.<br />
+This is done to ensure that when a client node dies and nomad restarts the job on another node, the database is still the same and no data is lost. <br />
+
+The files service.nomad, run_job.sh are present in (./roles/nomad-cluster-setup/files)[./roles/nomad-cluster-setup/files] <br />
 
 ## Screencasts: 
 
