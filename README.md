@@ -1,4 +1,4 @@
-# [CSC 519 Devops](https://github.com/CSC-DevOps/Course/) [Milestone3](https://github.com/CSC-DevOps/Course/blob/master/Project/M3.md)
+# [CSC 519 Devops](https://github.com/CSC-DevOps/Course/) [Milestone 3](https://github.com/CSC-DevOps/Course/blob/master/Project/M3.md)
 
 ## Team Members
 - Abhimanyu Jataria(ajatari)
@@ -42,24 +42,25 @@ This task required us to set up a Jenkins server that will deploy iTrust and che
 
 - In this way we have achieved rolling updates.
 
-## Checkbox.io Canary/Production Server
-This task required us to deploy checkbox.io on two different servers. One with production branch and one with some changes (a canary server).
+## Checkbox.io Production/Canary Server
+This task required us to deploy `checkbox.io` on two different servers. One with `production branch` and one with some changes (a `canary server`).
 
-We have created two different branches for this in the checkbox.io repository. The jenkins job for checkbox.io deploys these two versions on two different machines. 
+We have created two different branches (`production` and `canary`)for this in the checkbox.io repository. The jenkins job for checkbox.io deploys these two versions on two different machines. 
 
 In total we have created 3 AWS EC2 instances for this task. (This is done in a single run of ansible script which also generates instances for itrust deployement)
 
-The first server runs production branch code, the second server runs canary branch code. Each of them also run redis-slaves (explained below)
+The first server runs production branch code, the second server runs canary branch code. Each of them also run `redis-slaves` (explained below)
 The third server runs the following things:
-- A load balancer: which diverts some traffic to production and some to canary. It also keeps checking whether the canary server is up and running. If it detects that the canary server is down, all traffic is re-routed to production server.
-- A redis master node (explained below)
-- A Redis-client: This server also runs a small node-js server to access the flags on redis server. This is used to switch the Feature Flag and Canary Flag on/off.
+- A `load balancer` (port 3000): which diverts some traffic to production and some to canary. It also keeps checking whether the canary server is up and running. If it detects that the canary server is down, all traffic is re-routed to production server.
+- A `redis-master` node (port 6379): (explained below)
+- A `nodejs server` (port 4000): The third server also runs a node-js server which connects to redis server to access the flags on redis server. This is used to switch the Feature Flag and Canary Flag on/off.
 
+We also have a canary flag setup in redis which can also be used to enable/disable the traffic routing to canary server by load_balancer.
 - There are two cases: 
 	- First if the canary is down, then all traffic is re-routed to production server.
 	- Second, if the canary flag itself is turned off, then also, load-balancer will route all traffic to production.
 
-## Redis Implementation:
+## Redis Setup + Feature Flags:
 
 Feature Flag toggling has been implemented in this milestone through redis master-slave architecure topology. We have used 3 AWS EC2 instances designating 1 as the master and 2 as read-only slaves. The master-slave architecture has been configured in such a way that user can write data on Redis master only and Redis slaves will get the replica of the master data after authenticating themselves with master authentication password.
 
@@ -83,6 +84,6 @@ Redis is also being used to enable/disable a CanaryServer Flag which starts/stop
 ## Contributions
 - Deployment and Rolling Updates - Atit Shetty
 - Automatic AWS EC2 Instance Spinning - Abhimanyu Jataria
-- Checkbox.io Canary Server Setup + Nomad Cluster Setup - Ankur Garg
-- Redis FeatureFlag Implementation - Debosmita Das
+- Checkbox.io Canary Server Setup + Nomad Cluster Setup + NodeJs Redis Client for setting Redis flags  - Ankur Garg
+- Redis Setup + FeatureFlag Implementation - Debosmita Das
 
