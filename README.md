@@ -60,7 +60,7 @@ We also have a canary flag setup in redis which can also be used to enable/disab
 	- First if the canary is down, then all traffic is re-routed to production server.
 	- Second, if the canary flag itself is turned off, then also, load-balancer will route all traffic to production.
 
-The files for load balancer are at [./roles/mongo-setup/files](./roles/canary_load_balancer/files) <br />
+The files for load balancer are at [./roles/canary_load_balancer/files](./roles/canary_load_balancer/files) <br />
 
 ## Redis Setup + Feature Flags:
 
