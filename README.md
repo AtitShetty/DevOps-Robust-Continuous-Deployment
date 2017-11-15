@@ -42,7 +42,11 @@ This task required us to set up a Jenkins server that will deploy iTrust and che
 
 - In this way we have achieved rolling updates.
 
-### [Screencast for Deployment and Rolling Updates](https://youtu.be/nz1o3ZfMQMs)
+## Screencasts: 
+
+- [Screencast for Deployment and Rolling Updates](https://youtu.be/nz1o3ZfMQMs)
+- [Screencast for Checkbox.io Deployment + Redis Feature Flag + Canary Server](https://www.youtube.com/watch?v=NE_TqApmYmc)
+- [Screencast for Nomad Cluster Setup](https://www.youtube.com/watch?v=IrVbKKOrhCs)
 
 ## Redis Implementation:
 

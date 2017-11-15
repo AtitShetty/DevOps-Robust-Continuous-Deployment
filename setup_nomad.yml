@@ -58,6 +58,7 @@
 
     - name: "stop pre-running job"
       shell: nomad stop checkboxio_nomad
+      ignore_errors: True
       when: nomad_node_role == "server"
 
     - name: "Start Nomad Job"

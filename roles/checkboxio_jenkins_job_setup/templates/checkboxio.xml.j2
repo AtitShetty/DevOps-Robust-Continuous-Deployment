@@ -21,7 +21,7 @@ echo "#!/bin/bash" >> checkbox.io/.git/hooks/pre-push
 echo "#!/bin/bash" >> checkbox.io/.git/hooks/pre-push
 echo "Auto deployment triggered" >> checkbox.io/.git/hooks/pre-push
 echo "cd /etc/playbooksRepo/devops-milestone3" >> checkbox.io/.git/hooks/pre-push
-echo "ansible-playbook deploy_checkboxio.yml -i staging.yml" >> checkbox.io/.git/hooks/pre-push
+echo "ansible-playbook deploy_checkboxio.yml -i checkbox_inventory" >> checkbox.io/.git/hooks/pre-push
 chmod +x checkbox.io/.git/hooks/pre-push
 cd checkbox.io
 git push -f origin master:production
